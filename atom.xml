@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://ch3cknull.github.io</id>
     <title>ch3cknull&apos;s blog</title>
-    <updated>2021-10-03T10:47:56.182Z</updated>
+    <updated>2021-10-03T15:07:53.203Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://ch3cknull.github.io"/>
     <link rel="self" href="https://ch3cknull.github.io/atom.xml"/>
@@ -10,6 +10,102 @@
     <logo>https://ch3cknull.github.io/images/avatar.png</logo>
     <icon>https://ch3cknull.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, ch3cknull&apos;s blog</rights>
+    <entry>
+        <title type="html"><![CDATA[使用 vite-plugin-pwa 将自己的网页变为PWA]]></title>
+        <id>https://ch3cknull.github.io/post/pwa/</id>
+        <link href="https://ch3cknull.github.io/post/pwa/">
+        </link>
+        <updated>2021-10-03T14:08:38.000Z</updated>
+        <content type="html"><![CDATA[<p>在枝网前端寻找一个能够将站点PWA化的方案时，找到了 <a href="https://github.com/antfu/vite-plugin-pwa">vite-plugin-pwa</a></p>
+<h1 id="安装">安装</h1>
+<pre><code class="language-bash">npm i -D vite-plugin-pwa
+</code></pre>
+<h1 id="配置">配置</h1>
+<pre><code class="language-ts">// vite.config.ts
+import { defineConfig } from 'vite'
+// import other plugins
+import { VitePWA } from 'vite-plugin-pwa'
+
+export default defineConfig({
+ plugins: [
+   //   other plugins
+   VitePWA({})
+ ],
+})
+</code></pre>
+<p>VitePWA接受一个 <code>Partial&lt;VitePWAOptions&gt;</code> , 其中，必须配置的属性有</p>
+<ul>
+<li>base</li>
+<li>workbox</li>
+<li>manifest</li>
+</ul>
+<p>这里是一个样例（使用枝网的配置）</p>
+<pre><code class="language-ts">VitePWA({
+      mode: 'development',
+      base: '/',
+      registerType: process.env.CLAIMS === 'true' ? 'autoUpdate' : undefined,
+      includeAssets: ['favicon.svg', 'robots.txt', 'apple-touch-icon.png'],
+      //   配置 worker box 用于离线缓存
+      workbox: {
+        runtimeCaching: [
+          {
+            // 根据正则表达式进行缓存，如果你喜欢 也可以使用/.*/i
+            urlPattern: /^https:\/\/asoulcnki.asia\/v1\/api\/ranking\/.*/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'asoulcnki-api-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 1.5,
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          }
+        ],
+      },
+      manifest: {
+        name: '枝网查重',
+        short_name: '枝网查重',
+        theme_color: '#60A5FA',  // 主题颜色，和 index.html 中的保持一致
+        background_color: '#FFFFFF',
+        description: 'A-Soul 小作文查重',
+        start_url: '/',
+        lang: 'zh-Hans-CN',
+        // PWA 要求至少有一张 192x192 和 512x512 的图片
+        icons: [
+          {
+            src: 'pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable',
+          },
+        ],
+      },
+    }),
+</code></pre>
+<p>之后运行 <code>npm run build</code> 或者你自己的构建命令<br>
+vite-plugin-pwa 会自动为你生成对应的 manifest 和 Service Worker</p>
+<figure data-type="image" tabindex="1"><img src="https://ch3cknull.github.io/post-images/1633273431956.png" alt="" loading="lazy"></figure>
+<p>不过到这里还是有些问题，sw.js 不会自己注册</p>
+<p>需要向 index.html 添加如下内容</p>
+<pre><code class="language-html">&lt;script src=&quot;/registerSW.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+<p>另外，PWA只有在 localhost 和 https 环境下可用<br>
+其他细节的地方后续再补充，先摆烂了</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[关于我]]></title>
         <id>https://ch3cknull.github.io/post/5W73kU3k3/</id>
