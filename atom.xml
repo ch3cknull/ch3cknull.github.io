@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://github.com</id>
+    <title>ch3cknull&apos;s blog</title>
+    <updated>2021-10-03T10:26:14.864Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://github.com"/>
+    <link rel="self" href="https://github.com/atom.xml"/>
+    <subtitle>温故而知新</subtitle>
+    <logo>https://github.com/images/avatar.png</logo>
+    <icon>https://github.com/favicon.ico</icon>
+    <rights>All rights reserved 2021, ch3cknull&apos;s blog</rights>
+    <entry>
+        <title type="html"><![CDATA[Hello World!]]></title>
+        <id>https://github.com/post/hello-world/</id>
+        <link href="https://github.com/post/hello-world/">
+        </link>
+        <updated>2021-10-03T10:09:36.000Z</updated>
+        <content type="html"><![CDATA[<p>Hello World!</p>
+]]></content>
+    </entry>
+</feed>
