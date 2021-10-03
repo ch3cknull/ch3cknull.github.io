@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://github.com</id>
     <title>ch3cknull&apos;s blog</title>
-    <updated>2021-10-03T10:29:15.407Z</updated>
+    <updated>2021-10-03T10:42:30.856Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://github.com"/>
     <link rel="self" href="https://github.com/atom.xml"/>
@@ -10,6 +10,15 @@
     <logo>https://github.com/images/avatar.png</logo>
     <icon>https://github.com/favicon.ico</icon>
     <rights>All rights reserved 2021, ch3cknull&apos;s blog</rights>
+    <entry>
+        <title type="html"><![CDATA[关于我]]></title>
+        <id>https://github.com/post/5W73kU3k3/</id>
+        <link href="https://github.com/post/5W73kU3k3/">
+        </link>
+        <updated>2021-10-03T10:34:15.000Z</updated>
+        <content type="html"><![CDATA[<p>undefined</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Hello World!]]></title>
         <id>https://github.com/post/hello-world/</id>
