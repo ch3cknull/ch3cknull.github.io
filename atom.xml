@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://ch3cknull.github.io</id>
     <title>ch3cknull&apos;s blog</title>
-    <updated>2021-10-03T15:08:35.514Z</updated>
+    <updated>2021-10-04T05:52:07.368Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://ch3cknull.github.io"/>
     <link rel="self" href="https://ch3cknull.github.io/atom.xml"/>
@@ -95,6 +95,14 @@ export default defineConfig({
       },
     }),
 </code></pre>
+<p>在 index.html 的header 添加以下内容</p>
+<pre><code class="language-html">&lt;link rel=&quot;apple-touch-icon&quot; href=&quot;/pwa-192x192.png&quot; /&gt;
+&lt;link rel=&quot;mask-icon&quot; href=&quot;/favicon.svg&quot; color=&quot;#FFFFFF&quot; /&gt;
+&lt;meta name=&quot;msapplication-TileColor&quot; content=&quot;#FFFFFF&quot; /&gt;
+&lt;meta name=&quot;apple-mobile-web-app-capable&quot; content=&quot;yes&quot; /&gt;
+&lt;!-- theme-color 和配置中的保持一致即可 --&gt;
+&lt;meta name=&quot;theme-color&quot; content=&quot;#60a5fa&quot; /&gt;
+</code></pre>
 <p>之后运行 <code>npm run build</code> 或者你自己的构建命令<br>
 vite-plugin-pwa 会自动为你生成对应的 manifest 和 Service Worker</p>
 <figure data-type="image" tabindex="1"><img src="https://ch3cknull.github.io/post-images/1633273431956.png" alt="" loading="lazy"></figure>
@@ -102,6 +110,10 @@ vite-plugin-pwa 会自动为你生成对应的 manifest 和 Service Worker</p>
 <p>需要向 index.html 添加如下内容</p>
 <pre><code class="language-html">&lt;script src=&quot;/registerSW.js&quot;&gt;&lt;/script&gt;
 </code></pre>
+<h1 id="service-worker-的更新">Service Worker 的更新</h1>
+<p>这里使用的是最简单的做法，浏览器在每次启动时，会自动对比新的 sw.js 和本地的 sw.js, 如果存在差异，就进行更新</p>
+<p>注意，对于sw.js，应该尽量避免通过修改文件名的方式来更新，因为两个不同版本的Service Woeker可能存在冲突问题</p>
+<p>如果使用了CDN的话，需要将 sw.js 设置为不缓存</p>
 <p>另外，PWA只有在 localhost 和 https 环境下可用<br>
 其他细节的地方后续再补充，先摆烂了</p>
 ]]></content>
