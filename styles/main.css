@@ -758,3 +758,25 @@ a {
   font-size: 16px;
   margin: 4px 8px;
 }
+
+      .sidebar {
+        width: 280px;
+      }
+      .main-container {
+        margin-left: 280px;
+      }
+    
+      body {
+        background: #e9ecef;
+      }
+    
+      .post-detail .post-content .icon {
+display: inline-block;
+height: 35px;
+padding: 5px;
+margin: 5px auto;
+}
+.post-detail {
+max-width: 1080px;
+}
+    
