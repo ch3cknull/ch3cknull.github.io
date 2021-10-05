@@ -1,22 +1,117 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://ch3cknull.github.io</id>
-    <title>ch3cknull&apos;s blog</title>
-    <updated>2021-10-05T04:53:17.342Z</updated>
-    <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://ch3cknull.github.io"/>
-    <link rel="self" href="https://ch3cknull.github.io/atom.xml"/>
-    <subtitle>温故而知新</subtitle>
-    <logo>https://ch3cknull.github.io/images/avatar.png</logo>
-    <icon>https://ch3cknull.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2021, ch3cknull&apos;s blog</rights>
-    <entry>
-        <title type="html"><![CDATA[OpenResty 安装]]></title>
-        <id>https://ch3cknull.github.io/post/openresty_install/</id>
-        <link href="https://ch3cknull.github.io/post/openresty_install/">
-        </link>
-        <updated>2021-10-05T04:22:25.000Z</updated>
-        <content type="html"><![CDATA[<table>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>OpenResty 安装 | ch3cknull&#39;s blog</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://ch3cknull.github.io/favicon.ico?v=1633409594359">
+<link rel="stylesheet" href="https://ch3cknull.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+
+
+地址
+https://openresty.org/download/openresty-1.19.3.2.tar.gz
+
+
+
+
+GitHub
+https://github.com/openresty/openresty
+
+
+配置文件位..." />
+    <meta name="keywords" content="OpenResty" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://ch3cknull.github.io">
+        <img src="https://ch3cknull.github.io/images/avatar.png?v=1633409594359" class="site-logo">
+        <h1 class="site-title">ch3cknull&#39;s blog</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="https://ch3cknull.github.io/post/5W73kU3k3" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/ch3cknull" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://ch3cknull.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">OpenResty 安装</h2>
+            <div class="post-date">2021-10-05</div>
+            
+            <div class="post-content" v-pre>
+              <table>
 <thead>
 <tr>
 <th>地址</th>
@@ -166,132 +261,59 @@ nginx http scgi temporary files: &quot;scgi_temp&quot;
 </code></pre>
 <h2 id="其他">其他</h2>
 <p>OpenResty 的优势在于能直接使用 Lua 脚本对请求和响应做修改和限制，后续会更新 Lua脚本 相关内容</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[使用 vite-plugin-pwa 将自己的网页变为PWA]]></title>
-        <id>https://ch3cknull.github.io/post/pwa/</id>
-        <link href="https://ch3cknull.github.io/post/pwa/">
-        </link>
-        <updated>2021-10-03T14:08:38.000Z</updated>
-        <content type="html"><![CDATA[<p>在枝网前端寻找一个能够将站点PWA化的方案时，找到了 <a href="https://github.com/antfu/vite-plugin-pwa">vite-plugin-pwa</a></p>
-<h1 id="安装">安装</h1>
-<pre><code class="language-bash">npm i -D vite-plugin-pwa
-</code></pre>
-<h1 id="配置">配置</h1>
-<pre><code class="language-ts">// vite.config.ts
-import { defineConfig } from 'vite'
-// import other plugins
-import { VitePWA } from 'vite-plugin-pwa'
 
-export default defineConfig({
- plugins: [
-   //   other plugins
-   VitePWA({})
- ],
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://ch3cknull.github.io/tag/VoDCUePXN/" class="tag">
+                    OpenResty
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://ch3cknull.github.io/post/pwa/">
+                  <h3 class="post-title">
+                    使用 vite-plugin-pwa 将自己的网页变为PWA
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
 })
-</code></pre>
-<p>VitePWA接受一个 <code>Partial&lt;VitePWAOptions&gt;</code> , 其中，必须配置的属性有</p>
-<ul>
-<li>base</li>
-<li>workbox</li>
-<li>manifest</li>
-</ul>
-<p>这里是一个样例（使用枝网的配置）</p>
-<pre><code class="language-ts">VitePWA({
-      mode: 'development',
-      base: '/',
-      registerType: process.env.CLAIMS === 'true' ? 'autoUpdate' : undefined,
-      includeAssets: ['favicon.svg', 'robots.txt', 'apple-touch-icon.png'],
-      //   配置 worker box 用于离线缓存
-      workbox: {
-        runtimeCaching: [
-          {
-            // 根据正则表达式进行缓存，如果你喜欢 也可以使用/.*/i
-            urlPattern: /^https:\/\/asoulcnki.asia\/v1\/api\/ranking\/.*/i,
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'asoulcnki-api-cache',
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 1.5,
-              },
-              cacheableResponse: {
-                statuses: [0, 200],
-              },
-            },
-          }
-        ],
-      },
-      manifest: {
-        name: '枝网查重',
-        short_name: '枝网查重',
-        theme_color: '#60A5FA',  // 主题颜色，和 index.html 中的保持一致
-        background_color: '#FFFFFF',
-        description: 'A-Soul 小作文查重',
-        start_url: '/',
-        lang: 'zh-Hans-CN',
-        // PWA 要求至少有一张 192x192 和 512x512 的图片
-        icons: [
-          {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable',
-          },
-        ],
-      },
-    }),
-</code></pre>
-<p>在 index.html 的header 添加以下内容</p>
-<pre><code class="language-html">&lt;link rel=&quot;apple-touch-icon&quot; href=&quot;/pwa-192x192.png&quot; /&gt;
-&lt;link rel=&quot;mask-icon&quot; href=&quot;/favicon.svg&quot; color=&quot;#FFFFFF&quot; /&gt;
-&lt;meta name=&quot;msapplication-TileColor&quot; content=&quot;#FFFFFF&quot; /&gt;
-&lt;meta name=&quot;apple-mobile-web-app-capable&quot; content=&quot;yes&quot; /&gt;
-&lt;!-- theme-color 和配置中的保持一致即可 --&gt;
-&lt;meta name=&quot;theme-color&quot; content=&quot;#60a5fa&quot; /&gt;
-</code></pre>
-<p>之后运行 <code>npm run build</code> 或者你自己的构建命令<br>
-vite-plugin-pwa 会自动为你生成对应的 manifest 和 Service Worker</p>
-<figure data-type="image" tabindex="1"><img src="https://ch3cknull.github.io/post-images/1633273431956.png" alt="" loading="lazy"></figure>
-<p>不过到这里还是有些问题，sw.js 不会自己注册</p>
-<p>需要向 index.html 添加如下内容</p>
-<pre><code class="language-html">&lt;script src=&quot;/registerSW.js&quot;&gt;&lt;/script&gt;
-</code></pre>
-<h1 id="service-worker-的更新">Service Worker 的更新</h1>
-<p>这里使用的是最简单的做法，浏览器在每次启动时，会自动对比新的 sw.js 和本地的 sw.js, 如果存在差异，就进行更新</p>
-<p>注意，对于sw.js，应该尽量避免通过修改文件名的方式来更新，因为两个不同版本的Service Woeker可能存在冲突问题</p>
-<p>如果使用了CDN的话，需要将 sw.js 设置为不缓存</p>
-<p>另外，PWA只有在 localhost 和 https 环境下可用<br>
-其他细节的地方后续再补充，先摆烂了</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[关于我]]></title>
-        <id>https://ch3cknull.github.io/post/5W73kU3k3/</id>
-        <link href="https://ch3cknull.github.io/post/5W73kU3k3/">
-        </link>
-        <updated>2021-10-03T10:34:15.000Z</updated>
-        <content type="html"><![CDATA[<p>undefined</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Hello World!]]></title>
-        <id>https://ch3cknull.github.io/post/hello-world/</id>
-        <link href="https://ch3cknull.github.io/post/hello-world/">
-        </link>
-        <updated>2021-10-03T10:09:36.000Z</updated>
-        <content type="html"><![CDATA[<p>Hello World!</p>
-]]></content>
-    </entry>
-</feed>
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>
