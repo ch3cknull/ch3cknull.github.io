@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://ch3cknull.github.io</id>
     <title>ch3cknull&apos;s blog</title>
-    <updated>2021-10-05T07:47:28.664Z</updated>
+    <updated>2021-12-22T13:58:56.542Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://ch3cknull.github.io"/>
     <link rel="self" href="https://ch3cknull.github.io/atom.xml"/>
@@ -10,6 +10,151 @@
     <logo>https://ch3cknull.github.io/images/avatar.png</logo>
     <icon>https://ch3cknull.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, ch3cknull&apos;s blog</rights>
+    <entry>
+        <title type="html"><![CDATA[对 GitHub Actions 和 Octokit 的探索]]></title>
+        <id>https://ch3cknull.github.io/post/octokit/</id>
+        <link href="https://ch3cknull.github.io/post/octokit/">
+        </link>
+        <updated>2021-12-22T12:29:50.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2>
+<p><del>众所周知，懒是人类进步的第一生产力</del><br>
+重复工作交给机器做比较方便，这样自己重复工作的时间就能做一些更有意义的事情了😈</p>
+<p>对 GitHub Actions 还不了解的朋友可以去看阮一峰老师的文章，<a href="https://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html">链接</a></p>
+<p><a href="https://github.com/octokit">Octokit</a> 是 GitHub 官方推出的一套 SDK，用于调用 GitHub 的各种API，用这个东西我们可以做很多有趣的东西</p>
+<ul>
+<li>自动提 Issue，或者给 Issue 评论</li>
+<li>Issue自动转换成 PR，可以参见 type-challenge 的做法，<a href="https://github.com/type-challenges/type-challenges">链接</a></li>
+<li><del>批量点Star<del></li>
+</ul>
+<h3 id="广告">广告</h3>
+<p>这个项目主要是为催学社的小伙伴准备的，欢迎大家加入催学社一起来卷啊</p>
+<p>想加入催学<del>卷</del>社的小伙伴，可以联系催学社的发起者 崔哥 @cuixiaorui, vx: cuixr1314</p>
+<p>同时，崔哥也是 <a href="https://github.com/cuixiaorui/mini-vue">mini-vue</a> 的作者，实现一个简化版 Vue3，来帮助大家理解 Vue3 源码，也欢迎大家给 mini-vue 点个 star</p>
+<h2 id="找需求">找需求</h2>
+<p>众所周知，之前大崔哥 <a href="https://github.com/cuixiaorui/">@cuixiaorui</a> 有一个 study-every-day 的 repo，打卡每日计划，那么，我们能不能把提交每日计划的这个过程自动化呢？<br>
+大致的需求就是：</p>
+<ul>
+<li>用 Markdown 写一个模板</li>
+<li>每天定时把上面的模板内容评论到当天 每日任务的 Issue</li>
+<li>如果在自动执行之前，已经评论过，就不再发送了</li>
+<li>如果没有找到这一天的 Issue，也跳过执行</li>
+</ul>
+<p>这样我们就可以直接去改生成好的模板了，重复劳动减少了（虽然还是要手动去改）</p>
+<p><strong>当然可以！</strong></p>
+<p>于是就有了下面这个东西 <a href="https://github.com/ch3cknull/auto-issue-comment">ch3cknull/auto-issue-comment</a></p>
+<h2 id="用法">用法</h2>
+<ol start="0">
+<li>fork本项目</li>
+<li>修改 <code>template.md</code> 为自己适合的模板</li>
+<li>申请一个 token</li>
+<li>在 repo 的 <code>Settings</code> 的 <code>Secrets</code> 里添加新的 Secret
+<ol>
+<li>点击右上角 <code>New repository secret</code></li>
+<li>Name 为 <code>GH_TOKEN</code></li>
+<li>Value 为你申请到的 key</li>
+</ol>
+</li>
+</ol>
+<h2 id="怎么做">怎么做？</h2>
+<p>其实很简单，我们简单做一下任务拆分</p>
+<ol>
+<li>从repo拿到所有的 Issue，过滤掉所有的 PR （因为PR也是特殊的Issue）</li>
+<li>拿到当天对应的Issue</li>
+<li>查看当天是不是已经发过了</li>
+<li>发送模板评论</li>
+</ol>
+<p>拆分任务之后，就该来具体实现了</p>
+<h3 id="具体实现">具体实现</h3>
+<p>先熟悉一下 Octokit 的用法，在使用之前先安装一下，我推荐使用 pnpm 来管理包， 因为速度快，而且省空间</p>
+<pre><code class="language-bash">npm i -g pnpm
+pnpm i octokit
+</code></pre>
+<p>简单试用一下，这里的 token 是你需要自己在 GitHub 申请的，申请 token 的流程我会放在文章的最后，需要先验证 token 才能使用下文的 API</p>
+<pre><code class="language-ts">import { Octokit } from 'octokit'
+
+const octokit = new Octokit({ auth: '这里填写你的token' })
+</code></pre>
+<p>像我们上面所说的这些需求，比如：</p>
+<ul>
+<li>查看某个项目所有的Issue</li>
+<li>查看某个Issue所有的评论</li>
+<li>给指定的Issue发送评论</li>
+<li><del>给其他项目疯狂点Star</del></li>
+</ul>
+<p>都是有对应的API用的</p>
+<p>这里我们会用到以下几个API</p>
+<pre><code class="language-ts">const { listForRepo, createComment, listComments } = octokit.rest.issues
+const { getAuthenticated } = octokit.rest.users
+</code></pre>
+<p>这几个API能用来</p>
+<ul>
+<li>列出指定 repo 的所有 Issue</li>
+<li>在指定的 Issue 添加一条评论，这是我们需要的主要功能</li>
+<li>列出指定 Issue 所有的评论</li>
+<li>获取当前登陆用户的信息，这里用来和评论匹配，确定之前有没有在这个Issue发过言</li>
+</ul>
+<p>那么，开搞！</p>
+<p>本地的话，可以先小步快跑，把token硬编码在里面，等实现功能之后我们再考虑重构</p>
+<p>大概就是下面这个思路</p>
+<ol>
+<li>先用 <code>listForRepo</code> 根据指定的 owner 和 repo 信息</li>
+<li>根据每日计划Issue的标题格式，筛选出当天需要评论的 Issue（但是如果用 Issue 的创建时间应该更合理？设计之初没有想到这点）</li>
+<li>用 <code>listComments</code>  查看这个 Issue 的所有评论</li>
+<li>判断今天是否评论过（用 <code>getAuthenticated</code> 获取登陆者的用户名来和所有评论匹配）</li>
+<li>如果没有评论过，就发送评论（用 fs 读取模板 md，然后用 <code>createComment</code> 发送 ）</li>
+</ol>
+<h3 id="和-github-actions-结合">和 GitHub Actions 结合</h3>
+<p>和 GitHub Actions 结合是需要做一些改动的，就比如 token 不能暴露在外，肯定不能硬编码在代码中（但我还是犯了这种错误，只需要重置一下，让旧 token 失效就行了），当然，GitHub也提供了这种存放秘密值的地方，配置的话，可以参见上面的用法。</p>
+<p>我们需要做的改变是，从环境变量中读取 token，这里我们指定的环境变量名是 <code>GH_TOKEN</code>，这样我们就能在代码中直接使用这个环境变量了。</p>
+<pre><code class="language-ts">const { GH_TOKEN } = process.env
+</code></pre>
+<p>另外，配置执行的 yml 也是一件比较麻烦的事<del>（我常常因为自己不会配置和大佬格格不入）</del></p>
+<p>按理来说，作为 node 应用，可以直接在官方示例上做修改就行了，但是配置过程还是充满坎坷的，不是漏了分号就是缩进错误，由于 GitHub 提供的机器时区和我们不同，需要额外修改一下，这里可以参考项目的README</p>
+<p>这里的 push 是我为了方便观察有没有成功运行才加的，正常情况只保留下面的 schedule 就行了</p>
+<pre><code class="language-yml">name: auto add template comment to cuixiaorui/study-every-day issue
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+      - cron: '30 0 * * *'
+
+jobs:
+  add-comment:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - run: npm install
+      - run: tsc
+      - run: node dist/index.js
+</code></pre>
+<p>至此，终于完成了，欢迎大家 fork 和 star</p>
+<h2 id="附录">附录</h2>
+<h3 id="申请-github-的-token">申请 GitHub 的 token</h3>
+<ol>
+<li>
+<p>打开你的 GitHub 的 Setting 的 Personal access tokens，点击<a href="https://github.com/settings/tokens">这里</a>快速跳转</p>
+</li>
+<li>
+<p>点击右上角 <code>generate new token</code></p>
+</li>
+<li>
+<p>填写 token 的名称，然后选择 token 对应的权限</p>
+</li>
+<li>
+<p>点击确定，并且复制 token</p>
+<p>需要注意的是，如果没复制，退出去就看不到当前 token 了，只能重置<br>
+重置的时候，之前的 token 会失效，使用之前 token 的应用需要配置新 token</p>
+</li>
+</ol>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[OpenResty 安装]]></title>
         <id>https://ch3cknull.github.io/post/openresty_install/</id>
