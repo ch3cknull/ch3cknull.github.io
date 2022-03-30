@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://ch3cknull.github.io</id>
     <title>ch3cknull&apos;s blog</title>
-    <updated>2022-02-28T15:01:00.672Z</updated>
+    <updated>2022-03-30T14:21:33.366Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://ch3cknull.github.io"/>
     <link rel="self" href="https://ch3cknull.github.io/atom.xml"/>
@@ -10,6 +10,110 @@
     <logo>https://ch3cknull.github.io/images/avatar.png</logo>
     <icon>https://ch3cknull.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, ch3cknull&apos;s blog</rights>
+    <entry>
+        <title type="html"><![CDATA[[Type-Challenge] Sum]]></title>
+        <id>https://ch3cknull.github.io/post/types_sum/</id>
+        <link href="https://ch3cknull.github.io/post/types_sum/">
+        </link>
+        <updated>2022-03-30T11:43:30.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="题目要求">题目要求</h2>
+<p>实现一个Sum 通过如下测试样例</p>
+<h3 id="示例">示例</h3>
+<pre><code class="language-ts">type Sum&lt;A extends string | number | bigint, B extends string | number | bigint&gt; = string
+</code></pre>
+<h3 id="测试样例">测试样例</h3>
+<pre><code class="language-ts">import { Equal, Expect } from '@type-challenges/utils'
+
+type cases = [
+  Expect&lt;Equal&lt;Sum&lt;2, 3&gt;, '5'&gt;&gt;,
+  Expect&lt;Equal&lt;Sum&lt;'13', '21'&gt;, '34'&gt;&gt;,
+  Expect&lt;Equal&lt;Sum&lt;'328', 7&gt;, '335'&gt;&gt;,
+  Expect&lt;Equal&lt;Sum&lt;1_000_000_000_000n, '123'&gt;, '1000000000123'&gt;&gt;,
+  Expect&lt;Equal&lt;Sum&lt;9999, 1&gt;, '10000'&gt;&gt;,
+  Expect&lt;Equal&lt;Sum&lt;4325234, '39532'&gt;, '4364766'&gt;&gt;,
+  Expect&lt;Equal&lt;Sum&lt;728, 0&gt;, '728'&gt;&gt;,
+  Expect&lt;Equal&lt;Sum&lt;'0', 213&gt;, '213'&gt;&gt;,
+  Expect&lt;Equal&lt;Sum&lt;0, '0'&gt;, '0'&gt;&gt;
+]
+</code></pre>
+<h2 id="问题分析">问题分析</h2>
+<h3 id="简易版的sum">简易版的Sum</h3>
+<p>使用 解构运算符 和 Tuple 的 length 属性很容易做到</p>
+<pre><code class="language-ts">type Computable = string | number | bigint
+
+type NumberToTuple&lt;T extends Computable, R extends any[] = []&gt; = 
+  `${T}` extends `${R['length']}` ? R : NumberToTuple&lt;T, [...R, 1]&gt;
+
+type Sum&lt;A extends Computable, B extends Computable&gt; = 
+  `${[...NumberToTuple&lt;A&gt;, ...NumberToTuple&lt;B&gt;]['length'] &amp; number}` 
+</code></pre>
+<p>但是对于大数就没有办法了<br>
+<img src="https://ch3cknull.github.io/post-images/1648649296346.png" alt="" loading="lazy"></p>
+<h2 id="最终版本">最终版本</h2>
+<p>参考大数加法</p>
+<ol>
+<li>反转两个被加数</li>
+<li>对从低到高对每一位做加法然后进位
+<ul>
+<li>由于最大情况是 9 + 9 进 1 位，所以只需要考虑进位或者不进位</li>
+<li>对计算结果取余，当前位留下余数，并向上进位</li>
+</ul>
+</li>
+<li>反转计算后的数</li>
+</ol>
+<h3 id="反转字符串">反转字符串</h3>
+<p>递归反转字符串</p>
+<pre><code class="language-ts">type Reverse&lt;T extends string&gt; = T extends `${infer L}${infer R}` ? `${Reverse&lt;R&gt;}${L}` : ''
+</code></pre>
+<p>处理进位</p>
+<pre><code class="language-ts">type Remaind10&lt;T extends any[]&gt; = T extends [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...infer R]
+? {
+  number: R['length']
+  count: '1'
+}
+: {
+  number: T['length']
+  count: ''
+}
+</code></pre>
+<h2 id="最后答案">最后答案</h2>
+<pre><code class="language-ts">type Computable = string | number | bigint
+
+type NumberToTuple&lt;T extends Computable, R extends any[] = []&gt; = `${T}` extends `${number}`
+? `${T}` extends `${R['length']}`
+  ? R
+  : NumberToTuple&lt;T, [...R, 1]&gt;
+: []
+
+type Remaind10&lt;T extends any[]&gt; = T extends [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...infer R]
+? {
+  number: R['length']
+  count: '1'
+}
+: {
+  number: T['length']
+  count: ''
+}
+
+type Reverse&lt;T extends string&gt; = T extends `${infer L}${infer R}` ? `${Reverse&lt;R&gt;}${L}` : ''
+
+type HalfAdd&lt;A extends Computable, B extends Computable, count extends string = ''&gt; = 
+    Remaind10&lt;[...NumberToTuple&lt;A&gt;, ...NumberToTuple&lt;B&gt;, ...count extends '1' ? [1] : []]&gt;
+
+type StrAdd&lt;A extends string, B extends string, count extends string = '0'&gt; =
+A extends `${infer AL}${infer AR}`
+  ? B extends `${infer BL}${infer BR}`
+    ? `${HalfAdd&lt;AL, BL, count&gt;['number'] &amp; number}${StrAdd&lt;AR, BR, HalfAdd&lt;AL, BL, count&gt;['count']&gt;}`
+    : `${HalfAdd&lt;AL, count&gt;['number'] &amp; number}${StrAdd&lt;AR, '0', HalfAdd&lt;AL, count&gt;['count']&gt;}`
+  : B extends `${infer BL}${infer BR}`
+    ? `${HalfAdd&lt;BL, count&gt;['number'] &amp; number}${StrAdd&lt;'', BR, HalfAdd&lt;BL, count&gt;['count']&gt;}`
+    : count
+
+type Sum&lt;A extends Computable, B extends Computable&gt; = Reverse&lt;StrAdd&lt;Reverse&lt;`${A}`&gt;, Reverse&lt;`${B}`&gt;&gt;&gt;
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://ch3cknull.github.io/post-images/1648650001804.png" alt="" loading="lazy"></figure>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[使用 vite-plugin-pwa 将自己的网页变为PWA]]></title>
         <id>https://ch3cknull.github.io/post/pwa/</id>

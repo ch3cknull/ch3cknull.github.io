@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>[Type-Challenge] Sum | ch3cknull&#39;s blog</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://ch3cknull.github.io/favicon.ico?v=1648650082251">
+<link rel="stylesheet" href="https://ch3cknull.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="题目要求
+实现一个Sum 通过如下测试样例
+示例
+type Sum&lt;A extends string | number | bigint, B extends string | number | bigint&gt; = string..." />
+    <meta name="keywords" content="类型体操" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://ch3cknull.github.io">
+        <img src="https://ch3cknull.github.io/images/avatar.png?v=1648650082251" class="site-logo">
+        <h1 class="site-title">ch3cknull&#39;s blog</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/ch3cknull" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://ch3cknull.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">[Type-Challenge] Sum</h2>
+            <div class="post-date">2022-03-30</div>
+            
+            <div class="post-content" v-pre>
+              <h2 id="题目要求">题目要求</h2>
+<p>实现一个Sum 通过如下测试样例</p>
+<h3 id="示例">示例</h3>
+<pre><code class="language-ts">type Sum&lt;A extends string | number | bigint, B extends string | number | bigint&gt; = string
+</code></pre>
+<h3 id="测试样例">测试样例</h3>
+<pre><code class="language-ts">import { Equal, Expect } from '@type-challenges/utils'
+
+type cases = [
+  Expect&lt;Equal&lt;Sum&lt;2, 3&gt;, '5'&gt;&gt;,
+  Expect&lt;Equal&lt;Sum&lt;'13', '21'&gt;, '34'&gt;&gt;,
+  Expect&lt;Equal&lt;Sum&lt;'328', 7&gt;, '335'&gt;&gt;,
+  Expect&lt;Equal&lt;Sum&lt;1_000_000_000_000n, '123'&gt;, '1000000000123'&gt;&gt;,
+  Expect&lt;Equal&lt;Sum&lt;9999, 1&gt;, '10000'&gt;&gt;,
+  Expect&lt;Equal&lt;Sum&lt;4325234, '39532'&gt;, '4364766'&gt;&gt;,
+  Expect&lt;Equal&lt;Sum&lt;728, 0&gt;, '728'&gt;&gt;,
+  Expect&lt;Equal&lt;Sum&lt;'0', 213&gt;, '213'&gt;&gt;,
+  Expect&lt;Equal&lt;Sum&lt;0, '0'&gt;, '0'&gt;&gt;
+]
+</code></pre>
+<h2 id="问题分析">问题分析</h2>
+<h3 id="简易版的sum">简易版的Sum</h3>
+<p>使用 解构运算符 和 Tuple 的 length 属性很容易做到</p>
+<pre><code class="language-ts">type Computable = string | number | bigint
+
+type NumberToTuple&lt;T extends Computable, R extends any[] = []&gt; = 
+  `${T}` extends `${R['length']}` ? R : NumberToTuple&lt;T, [...R, 1]&gt;
+
+type Sum&lt;A extends Computable, B extends Computable&gt; = 
+  `${[...NumberToTuple&lt;A&gt;, ...NumberToTuple&lt;B&gt;]['length'] &amp; number}` 
+</code></pre>
+<p>但是对于大数就没有办法了<br>
+<img src="https://ch3cknull.github.io/post-images/1648649296346.png" alt="" loading="lazy"></p>
+<h2 id="最终版本">最终版本</h2>
+<p>参考大数加法</p>
+<ol>
+<li>反转两个被加数</li>
+<li>对从低到高对每一位做加法然后进位
+<ul>
+<li>由于最大情况是 9 + 9 进 1 位，所以只需要考虑进位或者不进位</li>
+<li>对计算结果取余，当前位留下余数，并向上进位</li>
+</ul>
+</li>
+<li>反转计算后的数</li>
+</ol>
+<h3 id="反转字符串">反转字符串</h3>
+<p>递归反转字符串</p>
+<pre><code class="language-ts">type Reverse&lt;T extends string&gt; = T extends `${infer L}${infer R}` ? `${Reverse&lt;R&gt;}${L}` : ''
+</code></pre>
+<p>处理进位</p>
+<pre><code class="language-ts">type Remaind10&lt;T extends any[]&gt; = T extends [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...infer R]
+? {
+  number: R['length']
+  count: '1'
+}
+: {
+  number: T['length']
+  count: ''
+}
+</code></pre>
+<h2 id="最后答案">最后答案</h2>
+<pre><code class="language-ts">type Computable = string | number | bigint
+
+type NumberToTuple&lt;T extends Computable, R extends any[] = []&gt; = `${T}` extends `${number}`
+? `${T}` extends `${R['length']}`
+  ? R
+  : NumberToTuple&lt;T, [...R, 1]&gt;
+: []
+
+type Remaind10&lt;T extends any[]&gt; = T extends [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...infer R]
+? {
+  number: R['length']
+  count: '1'
+}
+: {
+  number: T['length']
+  count: ''
+}
+
+type Reverse&lt;T extends string&gt; = T extends `${infer L}${infer R}` ? `${Reverse&lt;R&gt;}${L}` : ''
+
+type HalfAdd&lt;A extends Computable, B extends Computable, count extends string = ''&gt; = 
+    Remaind10&lt;[...NumberToTuple&lt;A&gt;, ...NumberToTuple&lt;B&gt;, ...count extends '1' ? [1] : []]&gt;
+
+type StrAdd&lt;A extends string, B extends string, count extends string = '0'&gt; =
+A extends `${infer AL}${infer AR}`
+  ? B extends `${infer BL}${infer BR}`
+    ? `${HalfAdd&lt;AL, BL, count&gt;['number'] &amp; number}${StrAdd&lt;AR, BR, HalfAdd&lt;AL, BL, count&gt;['count']&gt;}`
+    : `${HalfAdd&lt;AL, count&gt;['number'] &amp; number}${StrAdd&lt;AR, '0', HalfAdd&lt;AL, count&gt;['count']&gt;}`
+  : B extends `${infer BL}${infer BR}`
+    ? `${HalfAdd&lt;BL, count&gt;['number'] &amp; number}${StrAdd&lt;'', BR, HalfAdd&lt;BL, count&gt;['count']&gt;}`
+    : count
+
+type Sum&lt;A extends Computable, B extends Computable&gt; = Reverse&lt;StrAdd&lt;Reverse&lt;`${A}`&gt;, Reverse&lt;`${B}`&gt;&gt;&gt;
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://ch3cknull.github.io/post-images/1648650001804.png" alt="" loading="lazy"></figure>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://ch3cknull.github.io/tag/mg3hl6JvNQ/" class="tag">
+                    类型体操
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://ch3cknull.github.io/post/pwa/">
+                  <h3 class="post-title">
+                    使用 vite-plugin-pwa 将自己的网页变为PWA
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>
